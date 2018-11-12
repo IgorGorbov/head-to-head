@@ -1,11 +1,46 @@
 import { observable } from 'mobx';
-import { firebaseAuth } from '../utils/firebase';
+import { firebaseAuth, playersRef } from '../utils/firebase';
 
 class ViewStore implements IViewStore {
-  authed: boolean = false;
-  isLoading: boolean = false;
-  user: any = null;
-  @observable errorMessage: string = '';
+  @observable authed = false;
+  @observable isLoading = true;
+  @observable user = null;
+  @observable errorMessage = '';
+  @observable players = [];
+
+  constructor() {
+    this.fetchPlayers();
+  }
+
+  fetchPlayers = () => {
+    playersRef.on(
+      'value',
+      function(snapshot) {
+        let players = [];
+
+        snapshot.forEach(function(childSnapshot) {
+          const player = childSnapshot.val();
+          player.key = childSnapshot.key;
+          players.push(player);
+        });
+
+        this.players = players;
+      }.bind(this)
+    );
+  };
+
+  updatePlayer = (key: string, name: string) => {
+    playersRef.child(key).set({ name: name });
+  };
+
+  deletePlayer = (key: string) => {
+    playersRef.child(key).remove();
+  };
+
+  deleteAllPlayers = () => {
+    playersRef.remove();
+  };
+
 
   firebaseCheckAuth = () => {
     firebaseAuth.onAuthStateChanged(user => {
@@ -23,6 +58,11 @@ class ViewStore implements IViewStore {
 
   loadError = err => {
     this.errorMessage = err;
+  };
+
+  addPlayer = (playerName: string) => {
+    const playerKey = playersRef.push().key;
+    playersRef.child(playerKey).set({ name: playerName });
   };
 }
 

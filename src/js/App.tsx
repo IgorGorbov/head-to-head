@@ -1,12 +1,8 @@
 import * as React from 'react';
-import { inject } from 'mobx-react';
-import { Switch, Route } from 'react-router-dom';
-import NavBar from './components/NavBar';
-import Home from './components/Home';
-import Login from './components/Login';
-import All from './components/All';
+import { inject, observer } from 'mobx-react';
+import { Switch, Route, withRouter } from 'react-router-dom';
+import { All, NavBar, Home, Login, Loader } from './components';
 import Admin from './components/admin/Admin';
-import Loader from './components/Loader';
 
 import DevTools from 'mobx-react-devtools';
 
@@ -15,10 +11,15 @@ interface AppProps {
 }
 interface AppState {}
 
-@inject('viewStore')
+@inject('viewStore') @observer
 class App extends React.Component<AppProps, AppState> {
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    const { viewStore } = this.props;
+    viewStore.firebaseCheckAuth();
   }
 
   render() {
@@ -32,7 +33,7 @@ class App extends React.Component<AppProps, AppState> {
           <Loader />
         ) : (
           <div>
-            <NavBar />
+            <NavBar viewStore={viewStore} />
             <div className="container-fluid">
               <div className="row">
                 <div className="container main-content">
@@ -45,9 +46,7 @@ class App extends React.Component<AppProps, AppState> {
                         <Route
                           exact
                           path="/login"
-                          render={routeProps => (
-                            <Login {...routeProps} viewStore={viewStore} />
-                          )}
+                          render={routeProps => <Login {...routeProps} viewStore={viewStore} />}
                         />
                         <Route exact path="/" component={Home} />
                       </Switch>
@@ -63,4 +62,4 @@ class App extends React.Component<AppProps, AppState> {
   }
 }
 
-export default App;
+export default withRouter(App);

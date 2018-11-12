@@ -14,10 +14,9 @@ firebase.initializeApp(config);
 export const ref: IFirebaseRef = firebase.database().ref();
 export const firebaseAuth: IFirebaseAuth = firebase.auth();
 
-// references to out children in our database
-// export const headToHeadsRef = ref.child('headToHeads');
-// export const playersRef = ref.child('players');
-// export const gamesRef = ref.child('games');
+export const headToHeadsRef = ref.child('headToHeads');
+export const playersRef = ref.child('players');
+export const gamesRef = ref.child('games');
 
 export function auth(email, pw) {
   return firebaseAuth
