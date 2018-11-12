@@ -12,7 +12,7 @@
   },
   "parser": "babel-eslint",
   "rules": {
-    "semi": [1, "never"],
+    "semi": [1, "always"],
     "strict": [2, "never"],
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,

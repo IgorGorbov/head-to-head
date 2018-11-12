@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const bootstrapEntryPoints = require('./webpack.bootstrap.config.js');
-
+const dotenv = require('dotenv-webpack');
 const path = require("path");
 
 const configDev = {
@@ -19,7 +19,7 @@ const configDev = {
     ],
     publicPath: '/',
     css: ['style-loader', 'css-loader', 'sass-loader']
-}
+};
 
 const configProd = {
     app: './src/index.tsx',
@@ -28,7 +28,7 @@ const configProd = {
         fallback: "style-loader",
         use: ['css-loader', 'sass-loader']
     })
-}
+};
 
 module.exports = (env) => {
 
@@ -48,6 +48,9 @@ module.exports = (env) => {
             filename: '[name].bundle.js',
             publicPath: config.publicPath
         },
+        node: {
+            fs: 'empty'
+          },
         resolve: {
             // Add '.ts' and '.tsx' as resolvable extensions.
             extensions: [".ts", ".tsx", ".js", ".json"]
@@ -102,7 +105,8 @@ module.exports = (env) => {
         devServer: {
             contentBase: path.join(__dirname, "dist"),
             stats: "errors-only",
-            hot: true
+            hot: true,
+            historyApiFallback: true
         },
         plugins: (function () {
             const plugins = [];
@@ -111,6 +115,7 @@ module.exports = (env) => {
                     template: './src/index.html'
                 })
             );
+            plugins.push(new dotenv());
             if (isDevelopment) {
                 plugins.push(
                     new webpack.HotModuleReplacementPlugin(),
@@ -135,9 +140,9 @@ module.exports = (env) => {
                         filename: '[name].css',
                         allChunks: true
                     })
-                )
+                );
             }
             return plugins;
         }())
-    }
-}
+    };
+};

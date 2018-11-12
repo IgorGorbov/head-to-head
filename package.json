@@ -58,6 +58,8 @@
     "@types/react-router-dom": "4.0.7",
     "@types/webpack-env": "1.13.0",
     "classnames": "2.2.5",
+    "dotenv": "^6.1.0",
+    "dotenv-webpack": "^1.5.7",
     "firebase": "4.2.0",
     "lodash": "4.17.4",
     "mobx": "3.2.2",
