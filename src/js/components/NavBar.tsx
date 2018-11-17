@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { logout } from '../utils/firebase';
 
 interface NavBarProps {
-  viewStore: IViewStore;
+  viewStore?: IViewStore;
 }
 
-const NavBar = observer(({ viewStore }: NavBarProps) => {
+const NavBar = (props: NavBarProps) => {
+  const { viewStore } = props;
   const { authed } = viewStore;
+
   return (
     <nav className="navbar navbar-inverse navbar-fixed-top">
       <div className="container">
@@ -26,18 +28,20 @@ const NavBar = observer(({ viewStore }: NavBarProps) => {
             <span className="icon-bar" />
           </button>
 
-          <Link to="/" className="navbar-brand">
+          <Link to={`${authed ? '/all' : '/'}`} className="navbar-brand">
             Head To Head
           </Link>
         </div>
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul className="nav navbar-nav navbar-left">
-            <li>
-              <Link to="/admin" className="navbar-brand">
-                Admin
-              </Link>
-            </li>
-          </ul>
+          {authed ? (
+            <ul className="nav navbar-nav navbar-left">
+              <li>
+                <Link to="/admin" className="navbar-brand">
+                  Admin
+                </Link>
+              </li>
+            </ul>
+          ) : null}
           <ul className="nav navbar-nav navbar-right">
             <li>
               {!authed ? (
@@ -55,6 +59,6 @@ const NavBar = observer(({ viewStore }: NavBarProps) => {
       </div>
     </nav>
   );
-});
+};
 
-export default NavBar;
+export default inject('viewStore')(observer(NavBar));
