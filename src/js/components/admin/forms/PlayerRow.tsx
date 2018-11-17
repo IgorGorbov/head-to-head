@@ -25,13 +25,10 @@ class PlayerRow extends React.Component<PlayerRowProps, PlayerRowState> {
     viewStore.deletePlayer(key);
   };
 
-  handleDeleteAllPlayers = () => {
-    const { viewStore } = this.props;
-    viewStore.deleteAllPlayers();
-  };
-
   render() {
-    const { index, player } = this.props;
+    const { index, player, viewStore } = this.props;
+    const { headToHeadPlayers } = viewStore;
+    const isDisable = headToHeadPlayers.includes(player.key);
     return (
       <tr>
         <th scope="row">{index + 1}</th>
@@ -46,12 +43,15 @@ class PlayerRow extends React.Component<PlayerRowProps, PlayerRowState> {
             onChange={this.handleInputChange}
           />
         </td>
+
         <td>
-          <button onClick={() => this.handleDeletePlayer(player.key)} className={`btn btn-default`}>
+          <button
+            disabled={isDisable}
+            title="First remove the game"
+            onClick={() => this.handleDeletePlayer(player.key)}
+            className={`btn btn-default`}
+          >
             X
-          </button>
-          <button onClick={this.handleDeleteAllPlayers} className={`btn btn-default`}>
-            Delete all players
           </button>
         </td>
       </tr>
