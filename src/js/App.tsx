@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import { All, NavBar, Home, Login, Loader } from './components';
+import { All, NavBar, Home, Login, Loader, HeadToHeadDetails } from './components';
+import { RequireAuth } from './components/routes';
 import Admin from './components/admin/Admin';
 
 import DevTools from 'mobx-react-devtools';
@@ -11,7 +12,8 @@ interface AppProps {
 }
 interface AppState {}
 
-@inject('viewStore') @observer
+@inject('viewStore')
+@observer
 class App extends React.Component<AppProps, AppState> {
   constructor(props) {
     super(props);
@@ -33,7 +35,7 @@ class App extends React.Component<AppProps, AppState> {
           <Loader />
         ) : (
           <div>
-            <NavBar viewStore={viewStore} />
+            <NavBar  />
             <div className="container-fluid">
               <div className="row">
                 <div className="container main-content">
@@ -41,13 +43,14 @@ class App extends React.Component<AppProps, AppState> {
                     <div className="col-sm-12">
                       <Switch>
                         <Route exact path="/" component={Home} />
-                        <Route exact path="/admin" component={Admin} />
-                        <Route exact path="/all" component={All} />
+                        <Route exact path="/admin" component={RequireAuth(Admin)} />
+                        <Route exact path="/all" component={RequireAuth(All)} />
                         <Route
                           exact
                           path="/login"
                           render={routeProps => <Login {...routeProps} viewStore={viewStore} />}
                         />
+                        <Route exact path="/details/:id" component={HeadToHeadDetails} />
                         <Route exact path="/" component={Home} />
                       </Switch>
                     </div>
